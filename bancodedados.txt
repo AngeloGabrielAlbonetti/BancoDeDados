@@ -1,6 +1,3 @@
-CREATE DATABASE meu_banco; 
-USE meu_banco; 
-
 CREATE TABLE usuario( 
     cpf_cnpj VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE, 
     nome VARCHAR(100) NOT NULL, 
@@ -54,15 +51,23 @@ ALTER TABLE anuncio ADD CONSTRAINT fk_anuncio_plano FOREIGN KEY (cpf_cnpj) REFER
 ALTER TABLE pagamento ADD CONSTRAINT fk_pagamento_entrega FOREIGN KEY (codigo_entregador) REFERENCES entrega(codigo_entregador); 
 ALTER TABLE pagamento ADD CONSTRAINT fk_pagamento_anuncio FOREIGN KEY (cpf_cnpj) REFERENCES anuncio(cpf_cnpj); 
 
+
 INSERT INTO usuario(cpf_cnpj, nome, idade, email, senha, telefone, endereco) 
 VALUES('00000000000', 'Anderson', 34, 'anderson@gmail.com', 'anderson123', '44999999999', 'rua anderson 55'); 
+
 
 INSERT INTO plano(id_plano, cpf_cnpj, tipo_plano, data_validade, data_criacao) 
 VALUES(1, '00000000000', 'VIP1', '2006-02-24', '2006-02-18');
 
-INSERT INTO anuncio(id_anuncio, data_postagem, tipo_anuncio, valor, localizacao_anuncio, desconto_plano, cpf_cnpj)
-VALUES(1, 2006-02-24, 'ferramenta', 25.00, maringa, 2, '00000000000');
 
-INSERT INTO anuncio(registro_pagamento, codigo_entregador, cpf_cnpj, codSeguranca, numero_do_cartao, validade_do_cartao , numero_conta )
-VALUES(1, 555, '00000000000', 123, );
+INSERT INTO anuncio(id_anuncio, data_postagem, tipo_anuncio, valor, localizacao_anuncio, desconto_plano, cpf_cnpj)
+VALUES(1, '2006-02-24', 'ferramenta', 25.00, 'maringa', 2.00, '00000000000');
+
+
+INSERT INTO entrega(id_entrega, codigo_entregador, forma_entrega, taxa_entrega, codigo_confirmacao)
+VALUES(1, 555, 'moto', 12.00, 99);
+
+
+INSERT INTO pagamento(registro_pagamento, codigo_entregador, cpf_cnpj, codSeguranca, numero_do_cartao, validade_do_cartao, numero_conta)
+VALUES(123, 555, '00000000000', '123', '123456', '2006-03-14', '73');
 
