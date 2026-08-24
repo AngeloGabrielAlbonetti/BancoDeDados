@@ -1,0 +1,68 @@
+CREATE DATABASE meu_banco; 
+USE meu_banco; 
+
+CREATE TABLE usuario( 
+    cpf_cnpj VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE, 
+    nome VARCHAR(100) NOT NULL, 
+    idade INT NOT NULL CHECK (idade>=16), 
+    email VARCHAR(150) NOT NULL UNIQUE, 
+    senha VARCHAR(100) NOT NULL, 
+    telefone VARCHAR(28) NOT NULL UNIQUE, 
+    endereco VARCHAR(150) NOT NULL 
+); 
+
+CREATE TABLE plano( 
+    id_plano INT PRIMARY KEY, 
+    cpf_cnpj VARCHAR(20) NOT NULL UNIQUE, 
+    tipo_plano VARCHAR(50) NOT NULL UNIQUE, 
+    data_validade DATE NOT NULL, 
+    data_criacao DATE NOT NULL 
+); 
+
+CREATE TABLE pagamento( 
+    registro_pagamento INT PRIMARY KEY, 
+    codigo_entregador INT NOT NULL UNIQUE, 
+    cpf_cnpj VARCHAR(20) NOT NULL UNIQUE, 
+    codSeguranca VARCHAR(100) NOT NULL, 
+    numero_do_cartao VARCHAR(16) NOT NULL, 
+    validade_do_cartao DATE NOT NULL, 
+    numero_conta VARCHAR(30) NOT NULL 
+); 
+
+CREATE TABLE entrega( 
+    id_entrega INT PRIMARY KEY, 
+    codigo_entregador INT NOT NULL UNIQUE, 
+    forma_entrega VARCHAR(20) NOT NULL, 
+    taxa_entrega DECIMAL(5,2) NOT NULL, 
+    codigo_confirmacao INT NOT NULL UNIQUE 
+); 
+
+CREATE TABLE anuncio( 
+    id_anuncio INT PRIMARY KEY, 
+    data_postagem DATE NOT NULL, 
+    tipo_anuncio VARCHAR(100) NOT NULL, 
+    valor DECIMAL(7,2) NOT NULL, 
+    localizacao_anuncio VARCHAR(150) NOT NULL, 
+    desconto_plano DECIMAL(7,2), 
+    cpf_cnpj VARCHAR(20) NOT NULL UNIQUE 
+); 
+
+ALTER TABLE pagamento ADD CONSTRAINT fk_pagamento_usuario FOREIGN KEY (cpf_cnpj) REFERENCES usuario(cpf_cnpj); 
+ALTER TABLE anuncio ADD CONSTRAINT fk_anuncio_usuario FOREIGN KEY (cpf_cnpj) REFERENCES usuario(cpf_cnpj); 
+ALTER TABLE plano ADD CONSTRAINT fk_plano_anuncio FOREIGN KEY (cpf_cnpj) REFERENCES usuario(cpf_cnpj); 
+ALTER TABLE anuncio ADD CONSTRAINT fk_anuncio_plano FOREIGN KEY (cpf_cnpj) REFERENCES plano(cpf_cnpj); 
+ALTER TABLE pagamento ADD CONSTRAINT fk_pagamento_entrega FOREIGN KEY (codigo_entregador) REFERENCES entrega(codigo_entregador); 
+ALTER TABLE pagamento ADD CONSTRAINT fk_pagamento_anuncio FOREIGN KEY (cpf_cnpj) REFERENCES anuncio(cpf_cnpj); 
+
+INSERT INTO usuario(cpf_cnpj, nome, idade, email, senha, telefone, endereco) 
+VALUES('00000000000', 'Anderson', 34, 'anderson@gmail.com', 'anderson123', '44999999999', 'rua anderson 55'); 
+
+INSERT INTO plano(id_plano, cpf_cnpj, tipo_plano, data_validade, data_criacao) 
+VALUES(1, '00000000000', 'VIP1', '2006-02-24', '2006-02-18');
+
+INSERT INTO anuncio(id_anuncio, data_postagem, tipo_anuncio, valor, localizacao_anuncio, desconto_plano, cpf_cnpj)
+VALUES(1, 2006-02-24, 'ferramenta', 25.00, maringa, 2, '00000000000');
+
+INSERT INTO anuncio(registro_pagamento, codigo_entregador, cpf_cnpj, codSeguranca, numero_do_cartao, validade_do_cartao , numero_conta )
+VALUES(1, 555, '00000000000', 123, );
+
