@@ -8,6 +8,25 @@ CREATE TABLE usuario(
     endereco VARCHAR(150) NOT NULL 
 ); 
 
+CREATE TABLE usuario_log( 
+    id_log INT AUTO_INCREMENT PRIMARY KEY,
+    cpf_cnpj_new VARCHAR(20), 
+    cpf_cnpj_old VARCHAR(20), 
+    nome_new VARCHAR(100), 
+    nome_old VARCHAR(100), 
+    idade_new INT, 
+    idade_old INT, 
+    email_new VARCHAR(150),
+    email_old VARCHAR(150),  
+    senha_new VARCHAR(100),
+    senha_old VARCHAR(100), 
+    telefone_new VARCHAR(28),
+    telefone_old VARCHAR(28), 
+    endereco_new VARCHAR(150),
+    endereco_old VARCHAR(150)
+); 
+
+
 CREATE TABLE plano( 
     id_plano INT PRIMARY KEY, 
     cpf_cnpj VARCHAR(20) NOT NULL UNIQUE, 
@@ -70,4 +89,30 @@ VALUES(1, 555, 'moto', 12.00, 99);
 
 INSERT INTO pagamento(registro_pagamento, codigo_entregador, cpf_cnpj, codSeguranca, numero_do_cartao, validade_do_cartao, numero_conta)
 VALUES(123, 555, '00000000000', '123', '123456', '2006-03-14', '73');
+
+
+CREATE TRIGGER trg_usuario_log_update_after
+AFTER UPDATE ON usuario_log
+FOR EACH ROW 
+BEGIN 
+    INSERT INTO usuario_log (id_log   , cpf_cnpj_new, cpf_cnpj_old,     nome_new,     nome_old,    idade_new,    idade_old, email_new, 
+                             email_old,    senha_new,    senha_old, telefone_new, telefone_old, endereco_new, endereco_old
+    ) 
+    VALUES (OLD.id_log, NEW.cpf_cnpj_new, 
+        OLD.cpf_cnpj_old, 
+        NEW.nome_new, 
+        OLD.nome_old, 
+        NEW.idade_new, 
+        OLD.idade_old, 
+        NEW.email_new, 
+        OLD.email_old,  
+        NEW.senha_new, 
+        OLD.senha_old, 
+        NEW.telefone_new, 
+        OLD.telefone_old, 
+        NEW.endereco_new, 
+        OLD.endereco_old
+	)
+END;
+
 
