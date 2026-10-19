@@ -350,7 +350,7 @@ AND pagamento.codigo_entregador IS NULL;
 
 
 
-CREATE OR REPLACE VIEW vw_03_self AS
+CREATE OR REPLACE VIEW cons_anuncios_mesma_cidade AS
 SELECT a1.id_anuncio AS anuncio_1,
        a2.id_anuncio AS anuncio_2,
        a1.localizacao_anuncio AS cidade
@@ -358,10 +358,8 @@ FROM anuncio a1
 JOIN anuncio a2
   ON a1.localizacao_anuncio = a2.localizacao_anuncio
  AND a1.id_anuncio < a2.id_anuncio;
-
-
-
-CREATE OR REPLACE VIEW vw_04_full AS
+ 
+CREATE OR REPLACE VIEW cons_anuncio_entrega_completo AS
 SELECT a.id_anuncio, a.tipo_anuncio, e.id_entrega, e.forma_entrega
 FROM anuncio a
 LEFT JOIN entrega e ON e.id_entrega = a.id_anuncio
@@ -369,41 +367,27 @@ UNION
 SELECT a.id_anuncio, a.tipo_anuncio, e.id_entrega, e.forma_entrega
 FROM anuncio a
 RIGHT JOIN entrega e ON e.id_entrega = a.id_anuncio;
-
-
-
-
-CREATE OR REPLACE VIEW vw_05_having AS
+ 
+CREATE OR REPLACE VIEW cons_cidades_varios_anuncios AS
 SELECT localizacao_anuncio AS cidade,
        COUNT(*) AS total_anuncios,
        SUM(valor) AS soma_valor
 FROM anuncio
 GROUP BY localizacao_anuncio
 HAVING COUNT(*) >= 2;
-
-
-
-
-
-CREATE OR REPLACE VIEW vw_06_top3 AS
+ 
+CREATE OR REPLACE VIEW cons_top3_anuncios_caros AS
 SELECT id_anuncio, tipo_anuncio, valor
 FROM anuncio
 ORDER BY valor DESC
 LIMIT 3;
-
-
-
-CREATE OR REPLACE VIEW vw_07_subconsulta AS
+ 
+CREATE OR REPLACE VIEW cons_anuncios_acima_media AS
 SELECT id_anuncio, tipo_anuncio, valor
 FROM anuncio
 WHERE valor > (SELECT AVG(valor) FROM anuncio);
-
-
-
-
-
-
-CREATE OR REPLACE VIEW vw_08_cte AS
+ 
+CREATE OR REPLACE VIEW cons_total_por_usuario AS
 WITH total_usuario AS (
     SELECT cpf_cnpj, SUM(valor) AS total_anuncios
     FROM anuncio
@@ -412,28 +396,19 @@ WITH total_usuario AS (
 SELECT u.nome, t.total_anuncios
 FROM total_usuario t
 JOIN usuario u ON u.cpf_cnpj = t.cpf_cnpj;
-
-
-
-
-
-CREATE OR REPLACE VIEW vw_09_ranking AS
+ 
+CREATE OR REPLACE VIEW cons_ranking_planos AS
 SELECT id_plano,
        cpf_cnpj,
        tipo_plano,
        data_criacao,
        RANK() OVER (PARTITION BY YEAR(data_criacao) ORDER BY data_criacao DESC) AS posicao
 FROM plano;
-
-
-
-
-CREATE OR REPLACE VIEW vw_10_vizinho AS
+ 
+CREATE OR REPLACE VIEW cons_anuncios_acumulado AS
 SELECT id_anuncio,
        data_postagem,
        valor,
        LAG(valor) OVER (ORDER BY data_postagem, id_anuncio) AS valor_anterior,
        SUM(valor) OVER (ORDER BY data_postagem, id_anuncio) AS valor_acumulado
 FROM anuncio;
-
-
