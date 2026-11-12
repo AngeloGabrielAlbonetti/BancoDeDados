@@ -543,3 +543,63 @@ SELECT * FROM `plano`
 WHERE YEAR(data_criacao) = 2006
 --Mostrando registros 0 - 0 (1 no total, Consulta levou 0.0002 segundos.)
 
+
+
+--numero antigo 44999990001
+
+UPDATE usuario 
+SET telefone = '4400000000' 
+WHERE cpf_cnpj = 00000000001;
+
+--teste de rollback
+
+START TRANSACTION;
+UPDATE usuario 
+SET telefone = '6666666666' 
+WHERE cpf_cnpj = '0';
+ROLLBACK;
+
+
+--teste commit
+START TRANSACTION;
+UPDATE usuario 
+SET telefone = '44999990001' 
+WHERE cpf_cnpj = 00000000001;
+COMMIT;
+
+
+--m8
+
+USE u773559975_coomerce;
+
+CREATE TABLE IF NOT EXISTS usuario_log (
+    id_log INT AUTO_INCREMENT PRIMARY KEY,
+    cpf_cnpj_new VARCHAR(20),
+    cpf_cnpj_old VARCHAR(20),
+    nome_new VARCHAR(100),
+    nome_old VARCHAR(100),
+    idade_new INT,
+    idade_old INT,
+    email_new VARCHAR(150),
+    email_old VARCHAR(150),
+    senha_new VARCHAR(100),
+    senha_old VARCHAR(100),
+    telefone_new VARCHAR(28),
+    telefone_old VARCHAR(28),
+    endereco_new VARCHAR(150),
+    endereco_old VARCHAR(150),
+    data_log DATETIME,
+    acao VARCHAR(100)
+);
+
+CREATE EVENT IF NOT EXISTS ev_rotina
+ON SCHEDULE EVERY 1 MINUTE
+STARTS CURRENT_TIMESTAMP + INTERVAL 1 MINUTE
+ON COMPLETION PRESERVE
+ENABLE
+DO
+    INSERT INTO usuario_log (data_log, acao)
+    VALUES (NOW(), 'Execucao automatica da rotina');
+
+SHOW EVENTS FROM u773559975_coomerce;
+
